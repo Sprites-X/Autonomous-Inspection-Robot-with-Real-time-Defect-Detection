@@ -61,5 +61,5 @@ Full definition at `src/inspection_interfaces/srv/DetectDefect.srv`
 
 ## Author
 
-Pongsakorn Srithong (Sprite)
+Phongsakon Sithong (Sprite)
 AI Engineering and Data Science, Bangkok University (Rangsit)
