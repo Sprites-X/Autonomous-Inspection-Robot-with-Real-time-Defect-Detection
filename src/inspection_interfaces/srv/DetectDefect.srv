@@ -1,12 +1,12 @@
 # DetectDefect.srv
 
-# Request
+# --- Request ---
 sensor_msgs/Image image          # Camera image to be inspected
 string request_id                # Used to track/log each request (optional but recommended)
 
 ---
 
-#Response
+# --- Response ---
 bool defect_found                # Whether a defect was detected
 string defect_type               # e.g. "crack", "corrosion", "gauge_anomaly"
 float32 confidence                # Model confidence score (0.0 - 1.0)

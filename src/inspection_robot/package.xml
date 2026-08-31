@@ -5,7 +5,7 @@
   <version>0.1.0</version>
   <description>Nodes for autonomous patrol navigation and real-time defect detection using YOLO</description>
 
-  <maintainer email="phongsakonsithong@gmail.com">Phongsakon Sithong</maintainer>
+  <maintainer email="your_email@example.com">Phongsakon Sithong</maintainer>
   <license>MIT</license>
 
   <buildtool_depend>ament_python</buildtool_depend>

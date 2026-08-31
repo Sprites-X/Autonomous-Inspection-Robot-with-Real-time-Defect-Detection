@@ -1,0 +1,56 @@
+# Only parameters that typically need tuning away from Nav2 defaults for an
+# indoor patrol robot are listed explicitly; everything else inherits Nav2's
+# own defaults rather than being copy-pasted wholesale, so a Nav2 version
+# upgrade doesn't silently leave this file out of sync with new defaults.
+
+amcl:
+  ros__parameters:
+    # Lower than the outdoor-tuned default: indoor patrol routes are short and
+    # well-mapped, so a tighter particle spread converges faster without the
+    # risk of losing the robot in ambiguous corridor geometry.
+    min_particles: 200
+    max_particles: 1000
+    # Robot moves slowly during inspection stops, not continuously scanning,
+    # so update thresholds are relaxed to avoid redundant AMCL updates.
+    update_min_d: 0.2
+    update_min_a: 0.2
+
+controller_server:
+  ros__parameters:
+    controller_frequency: 10.0
+    FollowPath:
+      plugin: "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController"
+      # Speed capped well below the platform's max: inspection stops need the
+      # robot to settle before a defect check, and a slower approach reduces
+      # motion blur in the frame handed to defect_detector_server.
+      desired_linear_vel: 0.3
+      max_angular_accel: 1.5
+
+local_costmap:
+  local_costmap:
+    ros__parameters:
+      # Sized to the working area between patrol waypoints, not the whole
+      # site — a costmap sized for the full map would waste cycles updating
+      # cells far outside where the robot could possibly be next tick.
+      width: 5
+      height: 5
+      resolution: 0.05
+      inflation_layer:
+        # Slightly larger inflation than a bare-bones warehouse robot, since
+        # inspection targets (pipes, gauges) are often mounted close to
+        # walkable space and a tight margin risks clipping them.
+        inflation_radius: 0.4
+
+global_costmap:
+  global_costmap:
+    ros__parameters:
+      resolution: 0.05
+      inflation_layer:
+        inflation_radius: 0.4
+
+planner_server:
+  ros__parameters:
+    planner_plugins: ["GridBased"]
+    GridBased:
+      plugin: "nav2_navfn_planner::NavfnPlanner"
+      tolerance: 0.3
