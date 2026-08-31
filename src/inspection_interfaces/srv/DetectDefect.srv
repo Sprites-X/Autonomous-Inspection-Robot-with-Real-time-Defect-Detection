@@ -1,0 +1,23 @@
+# DetectDefect.srv
+
+# Request
+sensor_msgs/Image image          # Camera image to be inspected
+string request_id                # Used to track/log each request (optional but recommended)
+
+---
+
+#Response
+bool defect_found                # Whether a defect was detected
+string defect_type               # e.g. "crack", "corrosion", "gauge_anomaly"
+float32 confidence                # Model confidence score (0.0 - 1.0)
+
+# Bounding box (image coordinates, in pixels)
+int32 bbox_x
+int32 bbox_y
+int32 bbox_width
+int32 bbox_height
+
+# Real-world position (from robot pose at time of detection)
+geometry_msgs/Point world_position
+
+string message                   # Additional info, e.g. error or status message
