@@ -1,0 +1,15 @@
+# Parameters for defect_detector_server (see defect_detector_server.py).
+#
+# The node name key must match the node's `name:` in full_system.launch.py —
+# ROS2 only applies a params file to a node whose fully-qualified name matches.
+defect_detector_server:
+  ros__parameters:
+    # PLACEHOLDER: path to the trained weights. Relative paths resolve against
+    # the working directory the node is launched from, so prefer an absolute
+    # path or one under the package share dir once weights are in place.
+    # Note *.onnx / *.pt are gitignored — weights live outside the repo.
+    model_path: "models/best.onnx"
+
+    # PLACEHOLDER: minimum score for a detection to be reported as a defect.
+    # Raise it if the patrol logs false positives, lower it if cracks are missed.
+    confidence_threshold: 0.5

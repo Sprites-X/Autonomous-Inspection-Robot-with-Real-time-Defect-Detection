@@ -1,0 +1,19 @@
+# Patrol route for patrol_navigator (see patrol_navigator.py).
+#
+# Waypoints are a flat list of [x, y, yaw] triplets, consumed in order and
+# looped. Flat rather than nested because ROS2 parameters have no native
+# list-of-lists type — the node chunks this array by 3.
+patrol_navigator:
+  ros__parameters:
+    # Frame the coordinates below are expressed in.
+    waypoints_frame: "map"
+
+    # PLACEHOLDER ROUTE — replace with real site coordinates.
+    # Same three points the node previously hardcoded, kept so behaviour is
+    # unchanged until you edit them. Units: metres, radians.
+    #        x     y     yaw
+    waypoints: [
+      1.0,  2.0,  0.0,
+      3.5,  2.0,  0.0,
+      3.5, -1.0,  0.0,
+    ]

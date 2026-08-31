@@ -21,6 +21,7 @@ def generate_launch_description():
         description='Enable BLE trilateration fallback localization'
     )
 
+    pkg_share = get_package_share_directory('inspection_robot')
     nav2_bringup_dir = get_package_share_directory('nav2_bringup')
 
     # Nav2's own launch file is included rather than re-declaring its dozen
@@ -38,7 +39,7 @@ def generate_launch_description():
         executable='defect_detector_server',
         name='defect_detector_server',
         output='screen',
-        parameters=[os.path.join('config', 'perception_params.yaml')],
+        parameters=[os.path.join(pkg_share, 'config', 'perception_params.yaml')],
     )
 
     # patrol_navigator is started after perception/nav2 are declared, but ROS2
@@ -51,7 +52,7 @@ def generate_launch_description():
         executable='patrol_navigator',
         name='patrol_navigator',
         output='screen',
-        parameters=[os.path.join('config', 'patrol_waypoints.yaml')],
+        parameters=[os.path.join(pkg_share, 'config', 'patrol_waypoints.yaml')],
     )
 
     # BLE fallback is conditional rather than always-on: it publishes an

@@ -8,7 +8,7 @@
   <maintainer email="your_email@example.com">Phongsakon Sithong</maintainer>
   <license>MIT</license>
 
-  <buildtool_depend>ament_python</buildtool_depend>
+  <buildtool_depend>python3-setuptools</buildtool_depend>
 
   <depend>rclpy</depend>
   <depend>sensor_msgs</depend>

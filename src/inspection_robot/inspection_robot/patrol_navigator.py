@@ -28,8 +28,12 @@ class PatrolNavigator(Node):
         self.declare_parameter('waypoints_frame', 'map')
         self.frame = self.get_parameter('waypoints_frame').value
 
-        # Hardcoded here for clarity; in practice this is loaded from
-        # config/patrol_waypoints.yaml so the route can change without a rebuild.
+        # Loaded from config/patrol_waypoints.yaml so the route can change
+        # without a rebuild. The defaults below are the fallback route used
+        # when no params file is passed.
+        self.declare_parameter(
+            'waypoints', [1.0, 2.0, 0.0, 3.5, 2.0, 0.0, 3.5, -1.0, 0.0]
+        )
         self.waypoints = self._load_waypoints()
         self.current_index = 0
 
@@ -55,17 +59,36 @@ class PatrolNavigator(Node):
         self._send_next_goal()
 
     def _load_waypoints(self):
-        # Placeholder route; real waypoints come from config/patrol_waypoints.yaml.
-        return [
-            (1.0, 2.0, 0.0),
-            (3.5, 2.0, 0.0),
-            (3.5, -1.0, 0.0),
-        ]
+        """Chunk the flat [x, y, yaw, ...] parameter into (x, y, yaw) tuples.
+
+        The parameter is flat because ROS2 has no list-of-lists parameter type;
+        a trailing partial triplet means the config is malformed, so it is
+        dropped with a warning rather than silently navigating to a half-read
+        coordinate.
+        """
+        flat = list(self.get_parameter('waypoints').value)
+
+        remainder = len(flat) % 3
+        if remainder:
+            self.get_logger().warn(
+                f'waypoints has {len(flat)} values, not a multiple of 3; '
+                f'ignoring the trailing {remainder}'
+            )
+            flat = flat[:len(flat) - remainder]
+
+        return [tuple(flat[i:i + 3]) for i in range(0, len(flat), 3)]
 
     def _cache_image(self, msg):
         self.latest_image = msg
 
     def _send_next_goal(self):
+        # An empty route is a config error, not a finished patrol — returning
+        # here keeps the node alive and diagnosable instead of raising out of
+        # __init__ with an IndexError.
+        if not self.waypoints:
+            self.get_logger().error('no waypoints configured, patrol not started')
+            return
+
         if self.current_index >= len(self.waypoints):
             self.get_logger().info('patrol loop complete, restarting')
             self.current_index = 0
